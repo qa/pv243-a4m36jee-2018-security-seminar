@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Public static page</title>
+    </head>
+    <body>
+        <h1>This is static page with links to demo security.</h1>
+        <p>For all users. (Even non authenticated)</p>
+        <p>Test attempt should start with non authenticated session. For Google Chrome use: Menu/More Tools/Developer Tools/Clear Storage/Clear Site Data</p>
+        <h2>Task 1</h2>
+        <p>Link to servlet "SecuredServlet". It should redirect user to Keycloak server to login. It works for users with role "gooduser".
+            <a href="secured/">secured/"</a> </p>
+        <h2>Task 2</h2>
+        <p>Test link should redirect user to Keycloak server for login. It works for authenticated user with any role. <a href="static/index.html">static/index.html</a> </p>
+        <p>Test link should redirect user to Keycloak server for login. It works for users with role "superuser". <a href="static/secured/index.html">static/secured/index.html</a> </p>
+    </body>
+</html>
