@@ -21,7 +21,10 @@
  */
 package cz.ctu.fee.a4m36jee.seminar.security;
 
+import javax.annotation.security.DeclareRoles;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.HttpConstraint;
+import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +38,9 @@ import java.io.PrintWriter;
  * @author Peter Skopek
  */
 @WebServlet(name = "SecuredServlet", urlPatterns = { "/secured/" }, loadOnStartup = 1)
+@DeclareRoles("gooduser")
+@ServletSecurity(@HttpConstraint(rolesAllowed = { "gooduser" }))
+// NOTE: don't forget to create realm role "gooduser" and assign it to the user you are using
 public class SecuredServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
