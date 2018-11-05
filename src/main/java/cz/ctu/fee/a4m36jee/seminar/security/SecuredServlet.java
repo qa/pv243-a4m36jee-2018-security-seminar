@@ -39,7 +39,7 @@ import java.io.PrintWriter;
  */
 @WebServlet(name = "SecuredServlet", urlPatterns = { "/secured/" }, loadOnStartup = 1)
 @DeclareRoles("gooduser")
-@ServletSecurity(@HttpConstraint(rolesAllowed = { "gooduser" }))
+@ServletSecurity(@HttpConstraint(rolesAllowed = { "gooduser", "superuser" }))
 // NOTE: don't forget to create realm role "gooduser" and assign it to the user you are using
 public class SecuredServlet extends HttpServlet {
 

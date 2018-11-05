@@ -30,6 +30,9 @@
     </login-config>
 
     <security-role>
+        <role-name>baduser</role-name>
+    </security-role>
+    <security-role>
         <role-name>gooduser</role-name>
     </security-role>
     <security-role>
