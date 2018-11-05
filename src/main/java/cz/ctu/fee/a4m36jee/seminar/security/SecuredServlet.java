@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 
 /**
  * A simple servlet that to show basic security features of Java EE.
@@ -69,13 +68,15 @@ public class SecuredServlet extends HttpServlet {
         } else {
             writer.write("GOOD: ");
             writer.write("<a href=\"?logout=true\">Click here to logout</a><br/>");
-            ejbCall(req, resp);
+            writer.write(servletRequestInfo(req));
+            ejbCall(resp);
+            writer.write(testBean.sessionContextInfo());
         }
         writer.println("</body>");
         writer.println("</html>");
     }
 
-    private void ejbCall(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void ejbCall(HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
         writer.write("1. PermitAll: ");
         try {
@@ -97,6 +98,19 @@ public class SecuredServlet extends HttpServlet {
         } catch (EJBAccessException e) {
             writer.write("call to superUserEcho method failed<br/>");
         }
+    }
+
+    private String servletRequestInfo(HttpServletRequest req) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("========================================================<br/>");
+        sb.append("From servlet<br/>");
+        sb.append("========================================================<br/>");
+        sb.append("RemoteUser: ").append(req.getRemoteUser()).append("<br/>");
+        sb.append("Principal: ").append(req.getUserPrincipal()).append("<br/>");
+        sb.append("User is in superuser role: ").append(req.isUserInRole("superuser")).append("<br/>");
+        sb.append("========================================================<br/>");
+
+        return sb.toString();
     }
 
 }

@@ -21,10 +21,12 @@
  */
 package cz.ctu.fee.a4m36jee.seminar.security.ejb;
 
+import javax.annotation.Resource;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
 /**
@@ -36,6 +38,9 @@ import javax.ejb.Stateless;
 @LocalBean
 @DeclareRoles({ "superuser", "gooduser" })
 public class TestBean {
+
+    @Resource
+    SessionContext ctx;
 
     @PermitAll
     public String echo(String whatToEcho) {
@@ -51,4 +56,18 @@ public class TestBean {
     public String superUserEcho(String whatToEcho) {
         return whatToEcho;
     }
+
+    @PermitAll
+    public String sessionContextInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------------------------------<br/>");
+        sb.append("From EJB<br/>");
+        sb.append("-----------------------------------------------------------------<br/>");
+        sb.append(ctx.getCallerPrincipal()).append("<br/>");
+        sb.append("Caller is in gooduser role = ").append(ctx.isCallerInRole("gooduser")).append("<br/>");
+        sb.append("-----------------------------------------------------------------<br/>");
+
+        return sb.toString();
+    }
+
 }
