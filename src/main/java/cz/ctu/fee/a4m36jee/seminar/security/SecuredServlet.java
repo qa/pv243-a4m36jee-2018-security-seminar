@@ -21,7 +21,11 @@
  */
 package cz.ctu.fee.a4m36jee.seminar.security;
 
+import cz.ctu.fee.a4m36jee.seminar.security.ejb.TestBean;
+
 import javax.annotation.security.DeclareRoles;
+import javax.ejb.EJB;
+import javax.ejb.EJBAccessException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
@@ -31,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
  * A simple servlet that to show basic security features of Java EE.
@@ -38,12 +43,15 @@ import java.io.PrintWriter;
  * @author Peter Skopek
  */
 @WebServlet(name = "SecuredServlet", urlPatterns = { "/secured/" }, loadOnStartup = 1)
-@DeclareRoles("gooduser")
+@DeclareRoles({"gooduser", "superuser"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = { "gooduser", "superuser" }))
 // NOTE: don't forget to create realm role "gooduser" and assign it to the user you are using
 public class SecuredServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    @EJB
+    private TestBean testBean;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -59,10 +67,36 @@ public class SecuredServlet extends HttpServlet {
             writer.write("Logged Out. Refresh to log <a href=\".\">in</a>.");
             req.logout();
         } else {
-            writer.write("GOOD<br/>");
-            writer.write("<br/><a href=\"?logout=true\">Logout</a>");
+            writer.write("GOOD: ");
+            writer.write("<a href=\"?logout=true\">Click here to logout</a><br/>");
+            ejbCall(req, resp);
         }
         writer.println("</body>");
         writer.println("</html>");
     }
+
+    private void ejbCall(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        PrintWriter writer = resp.getWriter();
+        writer.write("1. PermitAll: ");
+        try {
+            writer.write(testBean.echo("successful call to echo method<br/>"));
+        } catch (EJBAccessException e) {
+            writer.write("call to echo method failed<br/>");
+        }
+
+        writer.write("2. gooduser: ");
+        try {
+            writer.write(testBean.goodUserEcho("successful call to goodUserEcho method<br/>"));
+        } catch (EJBAccessException e) {
+            writer.write("call to goodUserEcho method failed<br/>");
+        }
+
+        writer.write("3. superuser: ");
+        try {
+            writer.write(testBean.superUserEcho("successful call to superUserEcho method<br/>"));
+        } catch (EJBAccessException e) {
+            writer.write("call to superUserEcho method failed<br/>");
+        }
+    }
+
 }
